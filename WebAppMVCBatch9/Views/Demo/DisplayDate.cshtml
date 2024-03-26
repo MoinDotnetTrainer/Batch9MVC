@@ -1,0 +1,24 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>DisplayDate</title>
+</head>
+<body>
+
+    @using(Html.BeginForm())
+    {
+        <h3>On Load the time is:@ViewData["OnLoadDate"] </h3>
+        <br />
+        <input type="submit" value="submit" name="submit">
+        <h3>On Load the time is:@ViewData["OnclickDate"] </h3>
+    }
+   
+</body>
+</html>
