@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebAppMVCBatch9.Models;
 using System.Data.SqlClient;
+using Microsoft.AspNetCore.Razor.Language.Intermediate;
+using System.Data;
 
 namespace WebAppMVCBatch9.Controllers
 {
@@ -15,7 +17,6 @@ namespace WebAppMVCBatch9.Controllers
                     SetBasePath(Directory.GetCurrentDirectory()).
                     AddJsonFile("appsettings.json").Build();
             conn = dbconfig["ConnectionStrings:Constr"];
-
         }
 
         [HttpGet]
@@ -104,7 +105,6 @@ namespace WebAppMVCBatch9.Controllers
 
                 throw;
             }
-            return View();
         }
 
         public IActionResult HomePage()
@@ -114,7 +114,32 @@ namespace WebAppMVCBatch9.Controllers
 
         public IActionResult DisplayData()
         {
-            return View();
+            List<DisplayModel> obj = new List<DisplayModel>();
+            using (con = new SqlConnection(conn))
+            {
+                SqlDataAdapter da = new SqlDataAdapter("sp_getalldata", con);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                foreach (DataRow dr in dt.Rows)
+                {
+                    obj.Add(
+                        new DisplayModel
+                        {
+                            ID = Convert.ToInt32(dr["Id"].ToString()),
+                            Name = dr["Name"].ToString(),
+                            EmailID = dr["EmailID"].ToString(),
+                            Password = dr["Password"].ToString(),
+                            Dob = Convert.ToDateTime(dr["Dob"].ToString()),
+                            Mobile = dr["Mobile"].ToString(),
+                            Gender = dr["Gender"].ToString(),
+                            Dept = dr["Dept"].ToString(),
+                            Salary = Convert.ToInt32(dr["Salary"].ToString()),
+                            Status = Convert.ToBoolean(dr["Status"].ToString())
+                        }
+                        );
+                }
+            }
+            return View(obj);
         }
 
         public IActionResult Edit()
@@ -122,8 +147,21 @@ namespace WebAppMVCBatch9.Controllers
             return View();
         }
 
-        public IActionResult Delete()
+        public IActionResult Delete(int ID)
         {
+            using (con= new SqlConnection(conn))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sp_delete",con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@id",ID);
+                int x = cmd.ExecuteNonQuery();
+                if (x > 0)
+                {
+                    return RedirectToAction("Displaydata", "Curd");
+                }
+               
+            }
             return View();
         }
     }

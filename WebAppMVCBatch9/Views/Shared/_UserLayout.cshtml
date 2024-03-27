@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <table style="width:100%;background-color:orange;text-align:center;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;border-style:solid;border-radius:20px">
+        <tr>
+            <th>Welcome To Web App Developement</th>
+        </tr>
+    </table>
+    <table style="width:100%;background-color:lightyellow;text-align:center;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;border-style:solid;border-radius:20px">
+        <tr>
+            <td>
+                @Html.ActionLink("Home","Homepage","Curd")
+            </td>
+             <td>
+                @Html.ActionLink("Display Data","DisplayData","Curd")
+            </td>
+            <td>
+                ABout Us
+            </td>
+            <td>
+                @Html.ActionLink("Logout","Login","Curd")
+            </td>
+        </tr>
+    </table>
+
+    <div style="border-style:solid;margin:20px;padding:20px">
+        @RenderBody()
+    </div>
+
+
+    <table style="width:100%;background-color:gray;text-align:center;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;border-style:solid;border-radius:20px">
+        <tr>
+            <th>copy rights 2024</th>
+        </tr>
+    </table>
+
+</body>
+</html>
