@@ -142,8 +142,81 @@ namespace WebAppMVCBatch9.Controllers
             return View(obj);
         }
 
-        public IActionResult Edit()
+
+        [HttpGet]//onload
+        public IActionResult Edit(int ID)
         {
+            RegisterModel obj = null;
+            using (con =  new SqlConnection(conn))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("sP_getdatabyid", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@id",ID);
+                SqlDataAdapter da = new SqlDataAdapter();
+                DataSet ds = new DataSet();
+                da.SelectCommand = cmd;
+                da.Fill(ds);
+
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    obj = new RegisterModel();
+                    obj.ID = Convert.ToInt32(ds.Tables[0].Rows[i]["ID"].ToString());
+                    obj.Name = ds.Tables[0].Rows[i]["Name"].ToString();
+                    obj.EmailID = ds.Tables[0].Rows[i]["EmailID"].ToString();
+                    obj.Password = ds.Tables[0].Rows[i]["Password"].ToString();
+                    obj.Dob = Convert.ToDateTime(ds.Tables[0].Rows[i]["Dob"].ToString());
+                    obj.Mobile = ds.Tables[0].Rows[i]["Mobile"].ToString();
+                    obj.Gender = ds.Tables[0].Rows[i]["Gender"].ToString();
+                    obj.Dept= ds.Tables[0].Rows[i]["Dept"].ToString();
+                    obj.Salary = Convert.ToInt32(ds.Tables[0].Rows[i]["Salary"].ToString());
+                    obj.Status = Convert.ToBoolean(ds.Tables[0].Rows[i]["Status"].ToString());
+                   
+                }
+            }
+            return View(obj);
+        }
+
+
+        [HttpPost]
+        public IActionResult Edit(RegisterModel obj)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    using (con= new SqlConnection(conn))
+                    {
+                        con.Open();
+                        SqlCommand cmd = new SqlCommand("sp_Update_Curd",con);
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;  // we are passing sp in Cmd class
+                        cmd.Parameters.AddWithValue("@name", obj.Name);
+                        cmd.Parameters.AddWithValue("@EmailID", obj.EmailID);
+                        cmd.Parameters.AddWithValue("@password", obj.Password);
+                        cmd.Parameters.AddWithValue("@dob", Convert.ToDateTime(obj.Dob));
+                        cmd.Parameters.AddWithValue("@mobile", obj.Mobile);
+                        cmd.Parameters.AddWithValue("@gender", obj.Gender);
+                        cmd.Parameters.AddWithValue("@dept", obj.Dept);
+                        cmd.Parameters.AddWithValue("@salary", Convert.ToInt32(obj.Salary));
+                        cmd.Parameters.AddWithValue("@status", Convert.ToBoolean(obj.Status));
+                        cmd.Parameters.AddWithValue("@id", obj.ID);
+                        int x = cmd.ExecuteNonQuery();
+                        if (x > 0)
+                        {
+                            return RedirectToAction("DisplayData", "Curd");
+                        }
+                        else
+                        {
+                            return View();
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
             return View();
         }
 

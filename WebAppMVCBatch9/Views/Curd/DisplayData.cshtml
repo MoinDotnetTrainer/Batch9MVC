@@ -77,7 +77,7 @@
             </th>
             <th>
                 @Html.ActionLink("Delete","Delete","Curd",new{ID=item.ID})|
-                @Html.ActionLink("Edit","Edit","Curd")
+                @Html.ActionLink("Edit","Edit","Curd",new{ID=item.ID})
             </th>
         </tr>
     }
