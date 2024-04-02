@@ -1,0 +1,14 @@
+﻿@using WebAppMVCBatch9.Controllers 
+@{
+    ViewData["Title"] = "StdData";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<h1>StdData</h1>
+
+@foreach (var item in TempData["res"] as List<Std>)
+{
+    <li>
+        @item.Sname
+    </li>
+}      

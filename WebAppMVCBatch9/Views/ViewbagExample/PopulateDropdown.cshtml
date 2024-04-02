@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "PopulateDropdown";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<h1>PopulateDropdown</h1>
+
+
+@using (Html.BeginForm())
+{
+
+
+
+    <p>Country Data: @Html.DropDownList("ddl",new SelectList(ViewBag.results,"CName","CName"),"Plz select",new {@id="ddl"})</p>
+}
