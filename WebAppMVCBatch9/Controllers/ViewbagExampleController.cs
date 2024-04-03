@@ -8,6 +8,8 @@ namespace WebAppMVCBatch9.Controllers
     {
         public string Sname { get; set; }
     }
+
+    [SetSessionGlobally]
     public class ViewbagExampleController : Controller
     {
         public readonly string conn;

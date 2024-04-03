@@ -43,6 +43,8 @@ namespace WebAppMVCBatch9.Controllers
                     SqlDataReader dr = cmd.ExecuteReader();
                     if (dr.Read())
                     {
+                        HttpContext.Session.SetString("username", dr["name"].ToString());
+                        HttpContext.Session.SetString("Logintime", System.DateTime.Now.ToLongTimeString());
                         return RedirectToAction("HomePage", "Curd");
                     }
                     else
@@ -107,11 +109,15 @@ namespace WebAppMVCBatch9.Controllers
             }
         }
 
+
+        [SetSessionGlobally]  // action filter
         public IActionResult HomePage()
         {
             return View();
         }
 
+
+        [SetSessionGlobally]  // action filter
         public IActionResult DisplayData()
         {
             List<DisplayModel> obj = new List<DisplayModel>();
@@ -147,12 +153,12 @@ namespace WebAppMVCBatch9.Controllers
         public IActionResult Edit(int ID)
         {
             RegisterModel obj = null;
-            using (con =  new SqlConnection(conn))
+            using (con = new SqlConnection(conn))
             {
                 con.Open();
                 SqlCommand cmd = new SqlCommand("sP_getdatabyid", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@id",ID);
+                cmd.Parameters.AddWithValue("@id", ID);
                 SqlDataAdapter da = new SqlDataAdapter();
                 DataSet ds = new DataSet();
                 da.SelectCommand = cmd;
@@ -168,10 +174,10 @@ namespace WebAppMVCBatch9.Controllers
                     obj.Dob = Convert.ToDateTime(ds.Tables[0].Rows[i]["Dob"].ToString());
                     obj.Mobile = ds.Tables[0].Rows[i]["Mobile"].ToString();
                     obj.Gender = ds.Tables[0].Rows[i]["Gender"].ToString();
-                    obj.Dept= ds.Tables[0].Rows[i]["Dept"].ToString();
+                    obj.Dept = ds.Tables[0].Rows[i]["Dept"].ToString();
                     obj.Salary = Convert.ToInt32(ds.Tables[0].Rows[i]["Salary"].ToString());
                     obj.Status = Convert.ToBoolean(ds.Tables[0].Rows[i]["Status"].ToString());
-                   
+
                 }
             }
             return View(obj);
@@ -185,10 +191,10 @@ namespace WebAppMVCBatch9.Controllers
             {
                 try
                 {
-                    using (con= new SqlConnection(conn))
+                    using (con = new SqlConnection(conn))
                     {
                         con.Open();
-                        SqlCommand cmd = new SqlCommand("sp_Update_Curd",con);
+                        SqlCommand cmd = new SqlCommand("sp_Update_Curd", con);
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;  // we are passing sp in Cmd class
                         cmd.Parameters.AddWithValue("@name", obj.Name);
                         cmd.Parameters.AddWithValue("@EmailID", obj.EmailID);
@@ -222,20 +228,27 @@ namespace WebAppMVCBatch9.Controllers
 
         public IActionResult Delete(int ID)
         {
-            using (con= new SqlConnection(conn))
+            using (con = new SqlConnection(conn))
             {
                 con.Open();
-                SqlCommand cmd = new SqlCommand("sp_delete",con);
+                SqlCommand cmd = new SqlCommand("sp_delete", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@id",ID);
+                cmd.Parameters.AddWithValue("@id", ID);
                 int x = cmd.ExecuteNonQuery();
                 if (x > 0)
                 {
                     return RedirectToAction("Displaydata", "Curd");
                 }
-               
+
             }
             return View();
         }
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "Curd");
+        }
+
     }
 }

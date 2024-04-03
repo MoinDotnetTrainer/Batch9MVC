@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "RetriveData";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<h1>RetriveData</h1>
+
+
+
+<div class="text-left">
+    <b>User Name:</b> @HttpContextAccessor.HttpContext.Request.Cookies["key1"]
+    <br />
+    <b>User Id:</b> @HttpContextAccessor.HttpContext.Request.Cookies["key2"]
+</div>
