@@ -26,8 +26,8 @@ namespace WebAppMVCBatch9.Controllers
             ViewBag.key1 = "Some Data from ViewBag" + System.DateTime.Now.ToShortTimeString();
             ViewData["key2"] = "Some Data from view data" + System.DateTime.Now.ToShortTimeString();
             TempData["key3"] = "Some Data from tempdata" + System.DateTime.Now.ToShortTimeString();
-            //   return View();
-            return RedirectToAction("somedatahere", "ViewbagExample");
+           //  return View();
+           return RedirectToAction("somedatahere", "ViewbagExample");
         }
 
         public IActionResult getDatahere()
@@ -48,8 +48,8 @@ namespace WebAppMVCBatch9.Controllers
             obj.Add(new Std { Sname = "test" });
             obj.Add(new Std { Sname = "xyz" });
             obj.Add(new Std { Sname = "abc" });
-            TempData["res"] = obj;
-            //ViewBag.res = obj;
+           ViewData["res"] = obj;
+          //  ViewBag.res = obj;
 
             return View();
         }

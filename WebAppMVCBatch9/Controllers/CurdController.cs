@@ -3,6 +3,9 @@ using WebAppMVCBatch9.Models;
 using System.Data.SqlClient;
 using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using System.Data;
+using System.Net;
+using System.Net.Mail;
+using Microsoft.AspNetCore.Http;
 
 namespace WebAppMVCBatch9.Controllers
 {
@@ -45,17 +48,33 @@ namespace WebAppMVCBatch9.Controllers
                     {
                         HttpContext.Session.SetString("username", dr["name"].ToString());
                         HttpContext.Session.SetString("Logintime", System.DateTime.Now.ToLongTimeString());
-                        return RedirectToAction("HomePage", "Curd");
+
+                        Random rand = new Random();
+                        HttpContext.Session.SetString("OTP", rand.Next(1111,9999).ToString());
+                        bool res = SendEmail(obj.EmailID);
+                        if (res == true)
+                        {
+                            return RedirectToAction("OTPVerification", "Curd");
+                        }
+                        else
+                        {
+                            ViewData["ErrorMsg"] = "Something Went Wrong in Sending an Email";
+                            return PartialView("ErrorMsgView");
+                        }
+
+                        
                     }
                     else
                     {
-                        ViewData["errormsg"] = "EmailID or Password is not correct";
+                        ViewData["ErrorMsg"] = "EmailID or Password is not correct";
+                        return PartialView("ErrorMsgView");
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
 
-                    throw;
+                    ViewData["ErrorMsg"] = ex.Message;
+                    return PartialView("ErrorMsgView");
                 }
             }
 
@@ -63,6 +82,24 @@ namespace WebAppMVCBatch9.Controllers
             return View();
         }
 
+
+        public bool SendEmail(string EmailID)
+        {
+            bool chk = false;
+            MailMessage mail = new MailMessage();
+            mail.From = new MailAddress("ajinkya.sasne@gmail.com");
+            mail.To.Add(EmailID);
+            mail.IsBodyHtml = true;
+            mail.Subject = "OTP verification";
+            mail.Body = "ur OTP is :"+ HttpContext.Session.GetString("OTP");
+
+            SmtpClient client = new SmtpClient("smtp.gmail.com",587);
+            client.Credentials = new NetworkCredential("ajinkya.sasne@gmail.com", "zsym tmxd jmrg tmgd");
+            client.EnableSsl = true;
+            client.Send(mail);
+            chk = true;
+            return chk;
+        }
 
 
         [HttpGet]
@@ -99,7 +136,8 @@ namespace WebAppMVCBatch9.Controllers
                 }
                 else
                 {
-                    return View();
+                    ViewData["ErrorMsg"] = "Something Went Wrong while Inserting";
+                    return PartialView("ErrorMsgView");
                 }
             }
             catch (Exception)
@@ -248,6 +286,34 @@ namespace WebAppMVCBatch9.Controllers
         {
             HttpContext.Session.Clear();
             return RedirectToAction("Login", "Curd");
+        }
+
+        [HttpGet]
+        public IActionResult OTPVerification()
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult OTPVerification(otpModel obj)
+        {
+            if (obj.OTP == null)
+            {
+                ViewData["errormsg"] = "Plz Enter OTP";
+            }
+            else
+            {
+                if (obj.OTP.Equals(HttpContext.Session.GetString("OTP")))
+                {
+                    return RedirectToAction("Homepage", "curd");
+                }
+                else
+                {
+                    ViewData["errormsg"] = "OTP is not corect";
+                }
+            }
+            return View();
         }
 
     }

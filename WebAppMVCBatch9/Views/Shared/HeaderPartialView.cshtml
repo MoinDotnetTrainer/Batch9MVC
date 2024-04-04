@@ -1,0 +1,32 @@
+﻿@inject IHttpContextAccessor HttpContextAccessor
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<table style="width:100%;background-color:orange;text-align:center;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;border-style:solid;border-radius:20px">
+    <tr>
+        <th>Welcome To Web App Developement</th>
+    </tr>
+</table>
+<table style="width:100%;background-color:lightyellow;text-align:center;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;border-style:solid;border-radius:20px">
+    <tr>
+        <td>
+            @Html.ActionLink("Home","Homepage","Curd")
+        </td>
+        <td>
+            @Html.ActionLink("Display Data","DisplayData","Curd")
+        </td>
+
+        <td>
+            @Html.ActionLink("ViewbagExample","StoringData","ViewbagExample")
+        </td>
+        <td>
+            @Html.ActionLink("Logout","Logout","Curd")
+        </td>
+        <td>
+            Welcome Back:@HttpContextAccessor.HttpContext.Session.GetString("username")
+        </td>
+        <td>
+            Login Time:@HttpContextAccessor.HttpContext.Session.GetString("Logintime")
+        </td>
+    </tr>
+</table>
